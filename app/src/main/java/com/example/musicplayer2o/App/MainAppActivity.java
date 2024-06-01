@@ -75,11 +75,15 @@ public class MainAppActivity extends AppCompatActivity
 
     public void transitionToPlayingSong(Playlist playlist)
     {
-        m_songPlayingFragment = new SongPlayingFragment(playlist);
+        m_songPlayingFragment = new SongPlayingFragment(playlist, () -> transactionToPlaylistFragment());
         loadFragment(m_songPlayingFragment);
     }
 
-
+    public void transactionToPlaylistFragment()
+    {
+        m_songPlayingFragment = null;
+        loadFragment(m_songPlaylistFragment);
+    }
     private UserProfileFragment m_userProfileFragment = null;
     private NewSongsFragment m_newSongsFragment = null;
     private SongPlayListFragment m_songPlaylistFragment = null;

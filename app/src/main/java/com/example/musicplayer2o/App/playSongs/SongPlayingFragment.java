@@ -26,9 +26,11 @@ import com.example.musicplayer2o.UriElements.Songs.SongPlayer;
 
 public class SongPlayingFragment extends Fragment
 {
-    public SongPlayingFragment(Playlist playlist)
+    public interface BackToPlaylistsCallbackInterface { void execute(); }
+    public SongPlayingFragment(Playlist playlist, BackToPlaylistsCallbackInterface backToPlaylistCallback)
     {
         m_songPlayer = new SongPlayer(playlist);
+        m_backToPlaylistCallback = backToPlaylistCallback;
         s_firstTimeOnFragment = true;
     }
 
@@ -43,6 +45,7 @@ public class SongPlayingFragment extends Fragment
         setupViewsById(view);
         setupPlayOrPauseListener();
         setupOnUserChangingSongTimePointListener();
+        setupBackToPlaylistBtnListener();
 
         if(!s_firstTimeOnFragment)
         {
@@ -67,6 +70,7 @@ public class SongPlayingFragment extends Fragment
         m_songLengthText = view.findViewById(R.id.songCurrLength);
         m_songMaxDuration = view.findViewById(R.id.songMaxLength);
         m_songSeekbarProgress = view.findViewById(R.id.songSeekBar);
+        m_backToPlaylist = view.findViewById(R.id.backToPlaylistBtn);
     }
     private void setupPlayOrPauseListener()
     {
@@ -146,6 +150,17 @@ public class SongPlayingFragment extends Fragment
         m_songLengthText.setText(m_songPlayer.convertSongSecondsWithFormat(songPlayedDurationSeconds));
         m_songSeekbarProgress.setProgress(songPlayedPercentage);
     }
+    private void setupBackToPlaylistBtnListener()
+    {
+        m_backToPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                m_backToPlaylistCallback.execute();
+                if (m_songPlayer.isSongPlaying()) m_songPlayer.playOrPause();
+            }
+        });
+    }
     private static boolean s_firstTimeOnFragment = true;
     private SongPlayer m_songPlayer;
     private Handler m_songTimeDalayHandler;
@@ -155,4 +170,6 @@ public class SongPlayingFragment extends Fragment
     private TextView m_songLengthText;
     private TextView m_songMaxDuration;
     private SeekBar m_songSeekbarProgress;
+    private ImageButton m_backToPlaylist;
+    private BackToPlaylistsCallbackInterface m_backToPlaylistCallback;
 }
