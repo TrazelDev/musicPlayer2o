@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".App.playSongs.SongPlayListFragment"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:weightSum="6"
+    android:padding="7sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/gray_rounded_rectangle"
+        android:weightSum="10">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:gravity="center_vertical"
+            android:textColor="?android:textColorPrimary"
+            android:text="Song Play List:"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="5sp"
+            app:autoSizeMaxTextSize="200sp"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/songPlayListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:divider="@color/transparent"
+        android:dividerHeight="10dp"
+        android:padding="10dp"
+        android:layout_weight="5"
+        />
+
+</LinearLayout>

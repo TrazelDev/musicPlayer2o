@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".App.UsersNewSongs.NewSongsFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:weightSum="6"
+    android:padding="7sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/gray_rounded_rectangle"
+        android:weightSum="20">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="16"
+            android:gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:text="Title"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="5sp"
+            app:autoSizeMaxTextSize="200sp"
+            android:id="@+id/frameSpecifierText"
+            android:textSize="50sp"
+            android:textColor="?android:textColorPrimary"
+            />
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:weightSum="10">
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:src="@drawable/icon_upload"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Upload"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                android:padding="12sp"
+                android:id="@+id/uploadSongButton"
+                />
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:src="@drawable/icon_plus"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Upload"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                android:padding="12sp"
+                android:id="@+id/viewSongs"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/uploadSongMethodId"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:foregroundGravity="bottom"
+        />
+
+</LinearLayout>

@@ -1,0 +1,32 @@
+<resources>
+    <style name="musicPlayerTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+
+        <item name="android:windowBackground">@drawable/top_list_component_background</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+
+        <item name="android:buttonStyle">@style/buttonStyle</item>
+
+
+    </style>
+
+    <style name="buttonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/rounded_button</item>
+    </style>
+
+    <style name="Base.musicPlayerTheme" parent="Theme.Material3.DayNight.NoActionBar">
+
+    </style>
+
+</resources>
+

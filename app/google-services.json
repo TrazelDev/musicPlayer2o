@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "634483268737",
+    "project_id": "musicplayer2o",
+    "storage_bucket": "musicplayer2o.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634483268737:android:5c3db0a5a8442b4d634180",
+        "android_client_info": {
+          "package_name": "com.example.musicplayer2o"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZdslCDfecmVFIqiztsOqLlfbmz5fKxvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
