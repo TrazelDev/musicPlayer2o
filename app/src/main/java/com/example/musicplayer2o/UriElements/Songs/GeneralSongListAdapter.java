@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 public class GeneralSongListAdapter extends ArrayAdapter<Song>
 {
+    // Basic main setup:
     public interface EverySongAdditionalActions { public void execute(Song song); }
     public GeneralSongListAdapter(Context context, ArrayList<Song> songs, String songBtnActionInstruction, int songBtnActionIconResource,
                                   EverySongAdditionalActions additinalActions)
@@ -31,7 +32,6 @@ public class GeneralSongListAdapter extends ArrayAdapter<Song>
         m_songBtnActionIconResource = songBtnActionIconResource;
         m_additionalActions = additinalActions;
     }
-
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
         View listItemView = convertView;
@@ -47,6 +47,12 @@ public class GeneralSongListAdapter extends ArrayAdapter<Song>
 
         return listItemView;
     }
+
+
+
+
+
+    // Utility public methods:
     public void updateData(ArrayList<Song> newSongs)
     {
         m_songs.clear();
@@ -54,12 +60,17 @@ public class GeneralSongListAdapter extends ArrayAdapter<Song>
         notifyDataSetChanged();
     }
     public ArrayList<Song> getSongs() { return m_songs; }
+
+
+
+
+
+    // Utility setup methods:
     private void setupSongName(View songItemView, Song currSong)
     {
         TextView songNameTextView = songItemView.findViewById(R.id.itemSongName);
         songNameTextView.setText(currSong.getSongName());
     }
-
     private void setupSongImage(View songItemView, Song currSong)
     {
         ImageView songImageView = songItemView.findViewById(R.id.itemSongImage);
@@ -75,7 +86,6 @@ public class GeneralSongListAdapter extends ArrayAdapter<Song>
 
          songImageView.setImageResource(R.drawable.default_image);
     }
-
     private void setupSongActionListener(View songItemView)
     {
         ImageButton actionItemIcon = songItemView.findViewById(R.id.actionBtn);
@@ -92,9 +102,15 @@ public class GeneralSongListAdapter extends ArrayAdapter<Song>
         itemPlayIcon.setImageResource(m_songBtnActionIconResource);
     }
     public void uploadOnSongActionListener(View.OnClickListener listener) { this.m_onSaveSongListener = listener; }
+
+
+
+
     private final Context m_context;
     private final ArrayList<Song> m_songs;
     private View.OnClickListener m_onSaveSongListener;
+
+    // Song list adapter specification
     private String m_songBtnActionInstruction;
     private int m_songBtnActionIconResource;
     private EverySongAdditionalActions m_additionalActions;

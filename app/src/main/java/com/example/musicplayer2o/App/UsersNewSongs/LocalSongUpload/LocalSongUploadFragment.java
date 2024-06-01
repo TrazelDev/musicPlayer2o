@@ -24,24 +24,27 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class LocalSongUploadFragment extends Fragment
 {
+    // Basic setup:
     public LocalSongUploadFragment() {}
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_local_song_upload, container, false);
 
+        // resting so outdated data will be saved
+        m_imageUri = null;
+        m_songUri = null;
+
         setupViewsById(view);
+        setSongUploadListener();
         setupImageProvider();
         setupSongProvider();
-        setSongUploadListener();
 
         return view;
     }
-
     private void setupViewsById(View view)
     {
         m_currSongUploaded = view.findViewById(R.id.currentSongUploaded);
@@ -52,13 +55,33 @@ public class LocalSongUploadFragment extends Fragment
         m_songName = view.findViewById(R.id.songName);
         m_userSongImageDisplay = view.findViewById(R.id.songImage);
     }
+    private void setSongUploadListener()
+    {
+        m_sendSongBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                if(!isInformationForSongUploadReady()) return;
+
+                Song song = new Song(m_songUri, m_songName.getText().toString(), !m_noImageBox.isChecked(), m_imageUri);
+                Toast.makeText(requireContext(), "successful upload", Toast.LENGTH_SHORT).show();
+                song.uploadSong();
+            }
+        });
+    }
+
+
+
+
+
+    // Song and Image listeners:
     private void setupImageProvider()
     {
-        m_ImageProvider = registerForActivityResult(
+        m_imageProvider = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri ->
                 {
-                    if (!didUserChooseFile(uri)) return;
+                    if (!wasFileUploadedCorrectly(uri)) return;
 
                     m_imageUri = uri;
                     ImageUtils.loadImageDynamically(requireContext(), m_userSongImageDisplay, m_imageUri, R.drawable.default_image);
@@ -67,16 +90,16 @@ public class LocalSongUploadFragment extends Fragment
 
         m_uploadPictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { m_ImageProvider.launch(IMAGE_UPLOAD_FORMAT); }
+            public void onClick(View view) { m_imageProvider.launch(ActivityForResultProvider.IMAGES); }
         });
     }
     private void setupSongProvider()
     {
-        m_SongProvider = registerForActivityResult(
+        m_songProvider = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri ->
                 {
-                    if (!didUserChooseFile(uri)) return;
+                    if (!wasFileUploadedCorrectly(uri)) return;
 
                     m_songUri = uri;
                     m_currSongUploaded.setText("song uploaded: " + getFileNameFromUri(uri));
@@ -85,61 +108,58 @@ public class LocalSongUploadFragment extends Fragment
 
         m_uploadSongBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { m_SongProvider.launch(SONG_UPLOAD_FORMAT); }
+            public void onClick(View view) { m_songProvider.launch(ActivityForResultProvider.SONGS); }
         });
     }
-    private boolean didUserChooseFile(Uri uri) { return uri != null; }
+
+
+
+
+
+    // Auxiliary checking functions:
+    private boolean isInformationForSongUploadReady()
+    {
+        String songsName = String.valueOf(m_songName.getText());
+
+        if(m_imageUri == null && !m_noImageBox.isChecked())
+            Toast.makeText(requireContext(), "upload image/ check box for no image", Toast.LENGTH_SHORT).show();
+        else if(m_songUri == null) Toast.makeText(requireContext(), "upload song", Toast.LENGTH_SHORT).show();
+        else if(TextUtils.isEmpty(songsName)) Toast.makeText(requireContext(), "provide song name", Toast.LENGTH_SHORT).show();
+        else return true;
+
+        return false;
+    }
+    private boolean wasFileUploadedCorrectly(Uri fileUri) { return fileUri != null; }
     private String getFileNameFromUri(Uri uri)
     {
         return uri.getLastPathSegment();
     }
 
-    private boolean isAllInformationForSongUploadAvailable()
-    {
-        String songsName = String.valueOf(m_songName.getText());
-
-        if(m_imageUri == null && !m_noImageBox.isChecked())
-            Toast.makeText(requireContext(), "pls upload an image or check the box for no image", Toast.LENGTH_SHORT).show();
-        else if(m_songUri == null) Toast.makeText(requireContext(), "pls upload a song", Toast.LENGTH_SHORT).show();
-        else if(TextUtils.isEmpty(songsName)) Toast.makeText(requireContext(), "pls enter the song name", Toast.LENGTH_SHORT).show();
-        else return true;
-
-        return false;
-    }
-    private void setSongUploadListener()
-    {
-        m_sendSongBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                if(!isAllInformationForSongUploadAvailable()) return;
-
-                Song song = new Song(m_songUri, m_songName.getText().toString(), !m_noImageBox.isChecked(), m_imageUri);
-                Toast.makeText(requireContext(), "Successful", Toast.LENGTH_SHORT).show();
-                song.uploadSong();
-            }
-        });
-
-    }
 
 
-    // UI elements:
+
+
+    // UI:
     private Button m_uploadPictureBtn;
     private Button m_uploadSongBtn;
     private Button m_sendSongBtn;
     private CheckBox m_noImageBox;
-    private TextView m_currSongUploaded;
     private TextInputEditText m_songName;
+    private TextView m_currSongUploaded;
     private ImageView m_userSongImageDisplay;
 
-    // Pictures and song ids, URI - Uniform Resource Identifier
+    // URI - Uniform Resource Identifier
     private Uri m_imageUri;
     private Uri m_songUri;
 
     // Activity for result ( opening an activity for taking photos and songs from the user )
     // It generates URI which are kind of like computer paths with the following structure: scheme:[//authority]path[?query][#fragment]
-    private ActivityResultLauncher<String> m_ImageProvider;
-    private ActivityResultLauncher<String> m_SongProvider;
-    static final String IMAGE_UPLOAD_FORMAT = "image/*";
-    static final String SONG_UPLOAD_FORMAT = "audio/*";
+    private ActivityResultLauncher<String> m_imageProvider;
+    private ActivityResultLauncher<String> m_songProvider;
+
+    public class ActivityForResultProvider
+    {
+        static final String IMAGES = "image/*";
+        static final String SONGS = "audio/*";
+    }
 }

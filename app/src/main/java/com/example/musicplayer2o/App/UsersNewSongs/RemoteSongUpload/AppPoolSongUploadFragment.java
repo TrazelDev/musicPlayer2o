@@ -19,14 +19,13 @@ import java.util.ArrayList;
 
 public class AppPoolSongUploadFragment extends Fragment
 {
+    // Basic setup:
     public AppPoolSongUploadFragment() {}
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -38,26 +37,13 @@ public class AppPoolSongUploadFragment extends Fragment
 
         return view;
     }
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-        destroySongDataListeners();
-    }
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        setupSongList();
-    }
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        destroySongDataListeners();
-    }
     private void setupViewsById(View view) { m_listView = view.findViewById(R.id.songListView); }
 
+
+
+
+
+    // Setup of the apps non users songs list:
     private void setupSongList()
     {
         m_userSongsIds = new ArrayList<>();
@@ -67,8 +53,7 @@ public class AppPoolSongUploadFragment extends Fragment
                 userSongsIds ->
                 {
                     m_userSongsIds = userSongsIds;
-                    m_allNonUserSongs = Song.generateNonUserSongList(m_allSongs, m_userSongsIds);
-                    m_adapter.updateData(m_allNonUserSongs);
+                    reloadDisplayedListOfSongs();
                 }
         );
 
@@ -76,12 +61,10 @@ public class AppPoolSongUploadFragment extends Fragment
                 appSongs ->
                 {
                     m_allSongs = appSongs;
-                    m_allNonUserSongs = Song.generateNonUserSongList(m_allSongs, m_userSongsIds);
-                    m_adapter.updateData(m_allNonUserSongs);
+                    reloadDisplayedListOfSongs();
                 }
         );
     }
-
     private void setupSongListAdapter()
     {
         m_allNonUserSongs = new ArrayList<>();
@@ -102,12 +85,44 @@ public class AppPoolSongUploadFragment extends Fragment
             }
         });
     }
-    // this is used so a certain code will not run while the fragment is paused and it will crush the programm
+    private void reloadDisplayedListOfSongs()
+    {
+        m_allNonUserSongs = Song.generateNonUserSongList(m_allSongs, m_userSongsIds);
+        m_adapter.updateData(m_allNonUserSongs);
+    }
+
+
+
+
+    // Freeing database changed listeners to save resources:
     private void destroySongDataListeners()
     {
         RealtimeDB.getInstance().removeUserSongsListener();
         RealtimeDB.getInstance().removeSongListener();
     }
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        destroySongDataListeners();
+    }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        setupSongList();
+    }
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        destroySongDataListeners();
+    }
+
+
+
+
+
     private ListView m_listView;
     private GeneralSongListAdapter m_adapter;
 

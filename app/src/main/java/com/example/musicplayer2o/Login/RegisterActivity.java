@@ -19,8 +19,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 
-public class RegisterActivity extends AppCompatActivity {
-
+public class RegisterActivity extends AppCompatActivity
+{
+    // Setup of listeners and settings of buttons and so on:
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -31,8 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
         setupListenerForSwitchToLoggingIn();
         setupRegisterListener();
     }
-
-
     public void setupViewsById()
     {
         m_editTextEmail = findViewById(R.id.email);
@@ -42,41 +41,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
     public void setupListenerForSwitchToLoggingIn()
     {
-        m_switchToLoginBtn.setOnClickListener(new View.OnClickListener()
-        {
+        m_switchToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
                 finish();
             }
         });
-    }
-
-    public boolean areRegisterFieldsFilled()
-    {
-        String email = String.valueOf(m_editTextEmail.getText());
-        String password = String.valueOf(m_editTextPassword.getText());
-
-        if(TextUtils.isEmpty(email)) Toast.makeText(RegisterActivity.this, "pls enter email", Toast.LENGTH_SHORT).show();
-        if(TextUtils.isEmpty(password)) Toast.makeText(RegisterActivity.this, "pls enter password", Toast.LENGTH_SHORT).show();
-
-        return !(TextUtils.isEmpty(email) || TextUtils.isEmpty(password));
-    }
-
-    public void onRegisterAttempt(@NonNull Task<AuthResult> loginAttempt)
-    {
-        if (loginAttempt.isSuccessful())
-        {
-            Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
-
-            RealtimeDB.getInstance().createNewUser();
-            Intent intent = new Intent(getApplicationContext(), MainAppActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
-        Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
     }
     public void setupRegisterListener()
     {
@@ -94,6 +67,41 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+
+
+
+
+    // Register helpers:
+    public boolean areRegisterFieldsFilled()
+    {
+        String email = String.valueOf(m_editTextEmail.getText());
+        String password = String.valueOf(m_editTextPassword.getText());
+
+        if(TextUtils.isEmpty(email)) Toast.makeText(RegisterActivity.this, "email missing", Toast.LENGTH_SHORT).show();
+        if(TextUtils.isEmpty(password)) Toast.makeText(RegisterActivity.this, "password missing", Toast.LENGTH_SHORT).show();
+
+        return !(TextUtils.isEmpty(email) || TextUtils.isEmpty(password));
+    }
+    public void onRegisterAttempt(@NonNull Task<AuthResult> registerAttempt)
+    {
+        if (!registerAttempt.isSuccessful())
+        {
+            Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        RealtimeDB.getInstance().createNewUser();
+        Intent intent = new Intent(getApplicationContext(), MainAppActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+
+
+
+
+    // UI elements:
     TextInputEditText m_editTextEmail, m_editTextPassword;
     Button m_registerBtn;
     TextView m_switchToLoginBtn;

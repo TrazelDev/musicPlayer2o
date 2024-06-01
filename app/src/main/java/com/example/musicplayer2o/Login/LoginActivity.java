@@ -21,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 
 public class LoginActivity extends AppCompatActivity
 {
+    // Automatic Login if user is already logged:
     public void onStart()
     {
         super.onStart();
@@ -34,6 +35,11 @@ public class LoginActivity extends AppCompatActivity
         finish();
     }
 
+
+
+
+
+    // Setup of listeners and settings of buttons and so on:
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -44,13 +50,12 @@ public class LoginActivity extends AppCompatActivity
         setupListenerForSwitchToRegistering();
         setupLoginListener();
     }
-
     private void setupViewsById()
     {
         m_editTextEmail = findViewById(R.id.email);
         m_editTextPassword = findViewById(R.id.password);
         m_loginBtn = findViewById(R.id.btnLogin);
-        m_switchToRegisterBtn = findViewById(R.id.RegisterScreenSwitch);
+        m_switchToRegisterBtn = findViewById(R.id.registerScreenSwitch);
     }
     private void setupListenerForSwitchToRegistering()
     {
@@ -63,27 +68,6 @@ public class LoginActivity extends AppCompatActivity
                 finish();
             }
         });
-    }
-
-
-    private boolean areLoginFieldsFilled()
-    {
-        String email = String.valueOf(m_editTextEmail.getText());
-        String password = String.valueOf(m_editTextPassword.getText());
-
-        if(TextUtils.isEmpty(email)) Toast.makeText(LoginActivity.this, "pls enter email", Toast.LENGTH_SHORT).show();
-        if(TextUtils.isEmpty(password)) Toast.makeText(LoginActivity.this, "pls enter password", Toast.LENGTH_SHORT).show();
-
-        return !(TextUtils.isEmpty(email) || TextUtils.isEmpty(password));
-    }
-    private void onLoginAttempt(@NonNull Task<AuthResult> loginAttempt)
-    {
-        if (loginAttempt.isSuccessful())
-        {
-            switchToMainApp();
-            return;
-        }
-        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
     }
     private void setupLoginListener()
     {
@@ -99,6 +83,37 @@ public class LoginActivity extends AppCompatActivity
             }
         });
     }
+
+
+
+
+
+    // Log in helpers:
+    private boolean areLoginFieldsFilled()
+    {
+        String email = String.valueOf(m_editTextEmail.getText());
+        String password = String.valueOf(m_editTextPassword.getText());
+
+        if(TextUtils.isEmpty(email)) Toast.makeText(LoginActivity.this, "email missing", Toast.LENGTH_SHORT).show();
+        if(TextUtils.isEmpty(password)) Toast.makeText(LoginActivity.this, "password missing", Toast.LENGTH_SHORT).show();
+
+        return !(TextUtils.isEmpty(email) || TextUtils.isEmpty(password));
+    }
+    private void onLoginAttempt(@NonNull Task<AuthResult> loginAttempt)
+    {
+        if (loginAttempt.isSuccessful())
+        {
+            switchToMainApp();
+            return;
+        }
+        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+
+    // UI elements:
     TextInputEditText m_editTextEmail, m_editTextPassword;
     Button m_loginBtn;
     TextView m_switchToRegisterBtn;

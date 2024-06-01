@@ -17,23 +17,23 @@ import com.example.musicplayer2o.R;
 
 public class UserProfileFragment extends Fragment
 {
+    // Fragment setup:
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+
         setupViewsById(view);
+        m_emailDisplay.setText(Authenticator.getInstance().getUserEmail());
         setupLogoutListener();
 
         return view;
     }
-
     void setupViewsById(View view)
     {
         m_logout = view.findViewById(R.id.logout);
-        m_emailDisplay = view.findViewById(R.id.user_details);
-        m_emailDisplay.setText(Authenticator.getInstance().getUserEmail());
+        m_emailDisplay = view.findViewById(R.id.userDetails);
     }
-
     void setupLogoutListener()
     {
         m_logout.setOnClickListener(new View.OnClickListener()
@@ -48,6 +48,12 @@ public class UserProfileFragment extends Fragment
             }
         });
     }
+
+
+
+
+
+    // UI:
     Button m_logout;
     TextView m_emailDisplay;
 }

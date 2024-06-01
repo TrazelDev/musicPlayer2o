@@ -13,14 +13,13 @@ import com.example.musicplayer2o.App.Profile.UserProfileFragment;
 import com.example.musicplayer2o.App.UsersNewSongs.NewSongsFragment;
 import com.example.musicplayer2o.App.playSongs.SongPlayListFragment;
 import com.example.musicplayer2o.App.playSongs.SongPlayingFragment;
-import com.example.musicplayer2o.Database.RealtimeDB.RealtimeDB;
 import com.example.musicplayer2o.R;
 import com.example.musicplayer2o.UriElements.Songs.Playlist;
-import com.example.musicplayer2o.UriElements.Songs.SongPlayer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainAppActivity extends AppCompatActivity
 {
+    // Setup functionality:
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -30,7 +29,6 @@ public class MainAppActivity extends AppCompatActivity
         setupFragments();
         setupBottomBar();
     }
-
     void setupFragments()
     {
         if (m_songPlaylistFragment == null) m_songPlaylistFragment = new SongPlayListFragment((playlist) -> { transitionToPlayingSong(playlist); });
@@ -39,10 +37,9 @@ public class MainAppActivity extends AppCompatActivity
 
         loadFragment(m_songPlaylistFragment);
     }
-
     void setupBottomBar()
     {
-        m_bottomNavigationView = findViewById(R.id.bottom_navigation);
+        m_bottomNavigationView = findViewById(R.id.bottomNavigation);
         m_bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
@@ -62,31 +59,42 @@ public class MainAppActivity extends AppCompatActivity
     }
 
 
+
+
+
+    // Main App fragment loading:
     private void loadFragment(Fragment fragment)
     {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
 
-        // Adding the transaction to the backstack which make it so the fragment state is being state and the functions
-        // of onCreate and onCreateView are not recalled when the fragment is switched to again:
+        // Adding the transaction to the back stack ensures that the fragment's instance is retained,
+        // and the fragment's state is saved. If the fragment is switched to again by popping the back stack,
+        // the fragment's onCreate method is not recalled, but the onCreateView method will be called to recreate the view:
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
     public void transitionToPlayingSong(Playlist playlist)
     {
         m_songPlayingFragment = new SongPlayingFragment(playlist, () -> transactionToPlaylistFragment());
         loadFragment(m_songPlayingFragment);
     }
-
     public void transactionToPlaylistFragment()
     {
         m_songPlayingFragment = null;
         loadFragment(m_songPlaylistFragment);
     }
+
+
+
+
+
+    // Fragments:
     private UserProfileFragment m_userProfileFragment = null;
     private NewSongsFragment m_newSongsFragment = null;
     private SongPlayListFragment m_songPlaylistFragment = null;
     private SongPlayingFragment m_songPlayingFragment = null;
+
+    // UI:
     private BottomNavigationView m_bottomNavigationView;
 }

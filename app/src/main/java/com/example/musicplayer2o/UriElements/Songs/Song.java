@@ -11,25 +11,7 @@ import java.util.HashSet;
 
 public class Song
 {
-
-    public Song(Uri songUri, String songName, boolean hasPicture, Uri imageUri)
-    {
-        m_songUri = songUri;
-        m_imageUri = imageUri;
-        m_songName = songName;
-        m_hasPicture = hasPicture;
-
-        m_songUniqueID = RealtimeDB.getInstance().generateUniqueID();
-    }
-    public Song(Uri songUri, String songName, boolean hasPicture, Uri imageUri, String songUniqueID)
-    {
-        m_songUri = songUri;
-        m_imageUri = imageUri;
-        m_songName = songName;
-        m_hasPicture = hasPicture;
-
-        m_songUniqueID = songUniqueID;
-    }
+    // Generation of specific song lists:
     public static ArrayList<Song> generateNonUserSongList(ArrayList<Song> appSongs, ArrayList<String> userSongIds)
     {
         ArrayList<Song> appNonUserSongs = new ArrayList<>();
@@ -50,6 +32,35 @@ public class Song
 
         return userSongs;
     }
+
+
+
+
+
+    // Construction:
+    public Song(Uri songUri, String songName, boolean hasPicture, Uri imageUri)
+    {
+        m_songUri = songUri;
+        m_imageUri = imageUri;
+        m_songName = songName;
+        m_hasPicture = hasPicture;
+
+        m_songUniqueID = RealtimeDB.getInstance().generateUniqueID();
+    }
+    public Song(Uri songUri, String songName, boolean hasPicture, Uri imageUri, String songUniqueID)
+    {
+        m_songUri = songUri;
+        m_imageUri = imageUri;
+        m_songName = songName;
+        m_hasPicture = hasPicture;
+
+        m_songUniqueID = songUniqueID;
+    }
+
+
+
+
+    // public utility methods:
     public void uploadSong()
     {
         RealtimeDB.getInstance().createNewSong(this);
@@ -59,8 +70,11 @@ public class Song
         FilesStorage.getInstance().uploadSong(m_songUri, m_songUniqueID);
         if(m_hasPicture) FilesStorage.getInstance().uploadPicture(m_imageUri, m_songUniqueID);
     }
-
     public void registerReferenceSongToUser() { RealtimeDB.getInstance().registerSongToUser(SongOwnership.REFERENCE,this); }
+
+
+
+
 
     // getters & setters:
     public String getSongId() { return m_songUniqueID; }
@@ -76,7 +90,7 @@ public class Song
             return;
         }
 
-        FilesStorage.getInstance().getImageUri(imageUri ->
+        FilesStorage.getInstance().setupOnRetrieveImageUriActions(imageUri ->
             {
                 m_imageUri = imageUri;
                 onRetrieveImageUri.actionWithUri(imageUri);
@@ -91,14 +105,21 @@ public class Song
             return;
         }
 
-        FilesStorage.getInstance().getSongUri(songUri ->
+        FilesStorage.getInstance().setupOnRetrieveSongUriActions(songUri ->
         {
             m_songUri = songUri;
             onRetrieveSongUri.actionWithUri(songUri);
         }, m_songUniqueID);
     }
+
+
+
+
+    // Steaming and download properties:
     private Uri m_songUri;
     private Uri m_imageUri;
+
+    // Basic properties:
     private String m_songName;
     private boolean m_hasPicture;
     private String m_songUniqueID;
