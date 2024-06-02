@@ -1,0 +1,497 @@
+@startuml
+class com.example.musicplayer2o.App.UsersNewSongs.RemoteSongUpload.AppPoolSongUploadFragment {
+- ListView m_listView
+- GeneralSongListAdapter m_adapter
+- ArrayList<String> m_userSongsIds
+- ArrayList<Song> m_allSongs
+- ArrayList<Song> m_allNonUserSongs
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void setupViewsById(View)
+- void setupSongList()
+- void setupSongListAdapter()
+- void reloadDisplayedListOfSongs()
+- void destroySongDataListeners()
++ void onDestroyView()
++ void onResume()
++ void onPause()
+}
+
+
+interface com.example.musicplayer2o.UriElements.OnRetrieveUriAction {
++ void actionWithUri(Uri)
+}
+
+abstract class com.example.musicplayer2o.Authentication.Authenticator {
+- {static} Authenticator m_instance
++ {static} Authenticator getInstance()
++ {abstract}String getUserEmail()
++ {abstract}String getUserId()
++ {abstract}boolean isUserConnected()
++ {abstract}void createUser(String,String,OnAuthenticationAttempt)
++ {abstract}void logIntoAccount(String,String,OnAuthenticationAttempt)
++ {abstract}void signOut()
+}
+
+
+interface com.example.musicplayer2o.Authentication.Authenticator$OnAuthenticationAttempt {
++ void execute(Task<AuthResult>)
+}
+
+class com.example.musicplayer2o.Login.RegisterActivity {
+~ TextInputEditText m_editTextEmail
+~ Button m_registerBtn
+~ TextView m_switchToLoginBtn
+# void onCreate(Bundle)
++ void setupViewsById()
++ void setupListenerForSwitchToLoggingIn()
++ void setupRegisterListener()
++ boolean areRegisterFieldsFilled()
++ void onRegisterAttempt(Task<AuthResult>)
+}
+
+
+class com.example.musicplayer2o.App.playSongs.SongPlayListFragment {
+- String NO_INSTRUCTION
+- GeneralSongListAdapter m_adapter
+- ListView m_listView
+- ArrayList<Song> m_userSongs
+- ArrayList<String> m_userSongsIds
+- ArrayList<Song> m_allAppSongs
+- PlayListToSongPlayingTransitionCallback m_transitionToPlayingSongCallback
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onDestroyView()
++ void onResume()
++ void onPause()
+- void setupViewsById(View)
+- void setupUserSongList()
+- void setupSongListAdapter()
+- void destroySongDataListeners()
+}
+
+
+interface com.example.musicplayer2o.App.playSongs.SongPlayListFragment$PlayListToSongPlayingTransitionCallback {
++ void execute(Playlist)
+}
+
+class com.example.musicplayer2o.App.Profile.UserProfileFragment {
+~ Button m_logout
+~ TextView m_emailDisplay
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+~ void setupViewsById(View)
+~ void setupLogoutListener()
+}
+
+
+class com.example.musicplayer2o.UriElements.Images.ImageUtils {
++ {static} void loadImageDynamically(Context,ImageView,Uri,int)
+}
+
+class com.example.musicplayer2o.App.UsersNewSongs.LocalSongUpload.LocalSongUploadFragment {
+- Button m_uploadPictureBtn
+- Button m_uploadSongBtn
+- Button m_sendSongBtn
+- CheckBox m_noImageBox
+- TextInputEditText m_songName
+- TextView m_currSongUploaded
+- ImageView m_userSongImageDisplay
+- Uri m_imageUri
+- Uri m_songUri
+- ActivityResultLauncher<String> m_imageProvider
+- ActivityResultLauncher<String> m_songProvider
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void setupViewsById(View)
+- void setSongUploadListener()
+- void setupImageProvider()
+- void setupSongProvider()
+- boolean isInformationForSongUploadReady()
+- boolean wasFileUploadedCorrectly(Uri)
+- String getFileNameFromUri(Uri)
+}
+
+
+class com.example.musicplayer2o.App.UsersNewSongs.LocalSongUpload.LocalSongUploadFragment$ActivityForResultProvider {
+~ {static} String IMAGES
+~ {static} String SONGS
+}
+
+abstract class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDB {
+- {static} RealtimeDB m_instance
++ {static} RealtimeDB getInstance()
++ {abstract}String generateUniqueID()
++ {abstract}void createNewUser()
++ {abstract}void loginUser()
++ {abstract}void createNewSong(Song)
++ {abstract}void registerSongToUser(SongOwnership,Song)
++ {abstract}void setupOnUsersSongsChangedCallback(UsersSongsChangedAction)
++ {abstract}void removeUserSongsListener()
++ {abstract}void setupOnSongsChangedCallback(SongChangedAction)
++ {abstract}void removeSongListener()
+}
+
+
+class com.example.musicplayer2o.App.playSongs.SongPlayingFragment2 {
+- {static} boolean s_firstTimeOnFragment
+- SongPlayer2 m_songPlayer
+- Handler m_songTimeDalayHandler
+- Runnable m_songCurrPointUpdater
+- ImageButton m_playOrPause
+- ImageView m_songPicture
+- TextView m_songLengthText
+- TextView m_songMaxDuration
+- SeekBar m_songSeekbarProgress
+- ImageButton m_backToPlaylist
+- BackToPlaylistsCallbackInterface m_backToPlaylistCallback
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void setupViewsById(View)
+- void setupPlayOrPauseListener()
+- void setSongCurrTimePassedUpdater()
+- void setupOnUserChangingSongTimePointListener()
+- void setupSongMaxDurationAutomaticUpdater()
+- void setupSongImageUpdater()
+- void updatePauseOrPlayBtn()
+- void updateSongPlayedTimeAndSeekBar()
+- void setupBackToPlaylistBtnListener()
+}
+
+
+interface com.example.musicplayer2o.App.playSongs.SongPlayingFragment2$BackToPlaylistsCallbackInterface {
+~ void execute()
+}
+
+class com.example.musicplayer2o.UriElements.Songs.SongPlayerService {
+- IBinder binder
+- Handler m_songTimeDalayHandler
+- Runnable m_songCurrPointUpdater
+- MediaPlayer m_mediaPlayer
+- Playlist m_playlist
+- Song m_currSong
+- int m_pausePoint
+- int m_pauseSongPercentagePassed
+- ArrayList<SongPlayerServiceUiCallbacks> m_uiCallbacksList
++ void uploadPlayList(Playlist)
++ void addNewUiCallback(SongPlayerServiceUiCallbacks)
++ void resetUiCallbacks()
++ void forceUiUpdate()
++ boolean isPlaying()
++ void playOrPause()
++ void setupSongNewPlayingTimePoint(int)
+- boolean isSongPlayedForFirstTime()
+- boolean isSongUnPaused()
+- int convertSongPercentageToMillisecondsPassed(int)
++ IBinder onBind(Intent)
++ void onCreate()
++ int onStartCommand(Intent,int,int)
+- {static} MediaPlayer setupMediaPlayer()
+- void startPlayingSong(Uri)
+- void onGetPicture(SongPlayerServiceUiCallbacks)
+- void ongGetCurrDurationSong(SongPlayerServiceUiCallbacks)
+- void onGetSongMaxDuration(SongPlayerServiceUiCallbacks)
+- int getSongPercentagePassedWhileSongActive()
+- void setOnGetSongMaxDurationWhenSongOffCallback(SongPlayerServiceUiCallbacks,Uri)
+- void setActionsWithPreparedMediaPlayer(MediaPlayer.OnPreparedListener,Uri)
+- {static} String convertMillisecondsToFormattedTime(int)
+- void setSongPercentageAndTimePassed()
+- void setupActionsOnSongEnded()
+}
+
+
+class com.example.musicplayer2o.UriElements.Songs.SongPlayerService$LocalBinder {
++ SongPlayerService getService()
+}
+
+class com.example.musicplayer2o.Authentication.FirebaseAuthenticator {
++ {static} Authenticator getFirebaseAuth()
++ String getUserEmail()
++ String getUserId()
++ boolean isUserConnected()
++ void createUser(String,String,OnAuthenticationAttempt)
++ void logIntoAccount(String,String,OnAuthenticationAttempt)
++ void signOut()
+}
+
+interface com.example.musicplayer2o.Database.RealtimeDB.SongChangedAction {
++ void onSongsChanged(ArrayList<Song>)
+}
+
+class com.example.musicplayer2o.App.playSongs.SongPlayingFragment {
+- SongPlayerService exampleService
+- boolean bound
+- ServiceConnection serviceConnection
+- ImageButton m_playOrPause
+- ImageButton m_backToPlaylist
+- ImageView m_songPicture
+- TextView m_songMaxDuration
+- TextView m_songCurrDuration
+- SeekBar m_songSeekbarProgress
+- Playlist m_playlist
+- SongPlayingFragment2.BackToPlaylistsCallbackInterface m_backToPlaylistCallback
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void setupViewsById(View)
+- void setupPlayOrPauseListener()
+- void setupOnUserChangingSongTimePointListener()
+- void setupBackToPlaylistBtnListener()
++ void setMaxDuration(String)
++ void setSongDurationPassed(String)
++ void setSongImage(Uri)
++ void setSongPercentagePassed(int)
++ void setIsSongPlaying(boolean)
+}
+
+
+interface com.example.musicplayer2o.App.playSongs.SongPlayingFragment$BackToPlaylistsCallbackInterface {
+~ void execute()
+}
+
+abstract class com.example.musicplayer2o.Database.StorageDB.FilesStorage {
+- {static} FilesStorage m_instance
++ {static} FilesStorage getInstance()
++ {abstract}void uploadSong(Uri,String)
++ {abstract}void uploadPicture(Uri,String)
++ {abstract}void setupOnRetrieveImageUriActions(OnRetrieveUriAction,String)
++ {abstract}void setupOnRetrieveSongUriActions(OnRetrieveUriAction,String)
+}
+
+
+class com.example.musicplayer2o.Login.LoginActivity {
+~ TextInputEditText m_editTextEmail
+~ Button m_loginBtn
+~ TextView m_switchToRegisterBtn
++ void onStart()
+- void switchToMainApp()
+# void onCreate(Bundle)
+- void setupViewsById()
+- void setupListenerForSwitchToRegistering()
+- void setupLoginListener()
+- boolean areLoginFieldsFilled()
+- void onLoginAttempt(Task<AuthResult>)
+}
+
+
+class com.example.musicplayer2o.UriElements.Songs.SongPlayer2 {
+- MediaPlayer m_mediaPlayer
+- Playlist m_playlist
+- int m_positionSongPausedOn
+- Song m_currSong
+- OnSongMaxDurationChanged m_songDurationSetter
+- OnSongImageChanged m_songImageSetter
++ void forceUpdate()
++ void setupSongPictureUpdater(OnSongImageChanged)
++ boolean isSongPlaying()
++ int getSongDurationPlayedSeconds()
++ int getSongDurationSecondsWhileSongActive()
++ int getSongPercentagePassed()
++ void setupNewSongPlayingTimePoint(int)
++ void setupSongsMaxDurationUpdater(OnSongMaxDurationChanged)
++ void playOrPause()
++ String convertSongSecondsWithFormat(int)
+- boolean isSongPlayedForFirstTime()
+- boolean isSongUnPaused()
+- int convertSongPercentageToMillisecondsPassed(int)
+- void startPlayingSong(Uri)
++ void onSongEndedActions()
+- void setActionsWithSongDurationWhileSongOff(Uri,OnSongMaxDurationChanged)
+- void setupActionsOnSongEnded()
+}
+
+
+interface com.example.musicplayer2o.UriElements.Songs.SongPlayer2$OnSongMaxDurationChanged {
++ void execute(String)
+}
+
+interface com.example.musicplayer2o.UriElements.Songs.SongPlayer2$OnSongImageChanged {
++ void execute(Uri)
+}
+
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage {
+- StorageReference m_storageReference
++ {static} FirebaseFilesStorage getInstance()
++ void uploadSong(Uri,String)
++ void uploadPicture(Uri,String)
++ void setupOnRetrieveImageUriActions(OnRetrieveUriAction,String)
++ void setupOnRetrieveSongUriActions(OnRetrieveUriAction,String)
+}
+
+
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions {
+}
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Song {
++ {static} String FOLDER
++ {static} String EXTENSION
+}
+
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Picture {
++ {static} String FOLDER
++ {static} String EXTENSION
+}
+
+class com.example.musicplayer2o.UriElements.Songs.GeneralSongListAdapter {
+- Context m_context
+- ArrayList<Song> m_songs
+- View.OnClickListener m_onSaveSongListener
+- String m_songBtnActionInstruction
+- int m_songBtnActionIconResource
+- EverySongAdditionalActions m_additionalActions
++ View getView(int,View,ViewGroup)
++ void updateData(ArrayList<Song>)
++ ArrayList<Song> getSongs()
+- void setupSongName(View,Song)
+- void setupSongImage(View,Song)
+- void setupSongActionListener(View)
+- void setupSongActionBtnInstructionText(View)
+- void setupSongActionBtnIconResource(View)
++ void uploadOnSongActionListener(View.OnClickListener)
+}
+
+
+interface com.example.musicplayer2o.UriElements.Songs.GeneralSongListAdapter$EverySongAdditionalActions {
++ void execute(Song)
+}
+
+interface com.example.musicplayer2o.UriElements.Songs.SongPlayerServiceUiCallbacks {
++ void setMaxDuration(String)
++ void setSongDurationPassed(String)
++ void setSongImage(Uri)
++ void setSongPercentagePassed(int)
++ void setIsSongPlaying(boolean)
+}
+
+class com.example.musicplayer2o.UriElements.Songs.Playlist {
+- ArrayList<Song> m_songList
+- int m_currIndex
++ Song getNewSong()
+}
+
+
+class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions {
++ {static} String DB_MAIN_URL
+}
+
+class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$User {
++ {static} String FOLDER
++ {static} String USER_SONGS
++ {static} String OWNED_SONGS
++ {static} String REFERENCE_SONGS
+}
+
+class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$Song {
++ {static} String FOLDER
++ {static} String NAME_KEY_ATTRIBUTE
++ {static} String HAS_PICTURE_KEY_ATTRIBUTE
+}
+
+enum com.example.musicplayer2o.UriElements.Songs.SongOwnership {
++  OWNED
++  REFERENCE
+}
+
+class com.example.musicplayer2o.UriElements.Songs.Song {
+- Uri m_songUri
+- Uri m_imageUri
+- String m_songName
+- boolean m_hasPicture
+- String m_songUniqueID
++ {static} ArrayList<Song> generateNonUserSongList(ArrayList<Song>,ArrayList<String>)
++ {static} ArrayList<Song> generateUserSongList(ArrayList<Song>,ArrayList<String>)
++ void uploadSong()
++ void registerReferenceSongToUser()
++ String getSongId()
++ String getSongName()
++ Uri getImageUri()
++ boolean hasPicture()
++ void setOnRetrieveImageAction(OnRetrieveUriAction)
++ void setOnRetrieveSongAction(OnRetrieveUriAction)
+}
+
+
+interface com.example.musicplayer2o.Database.RealtimeDB.UsersSongsChangedAction {
++ void onSongsChanged(ArrayList<String>)
+}
+
+class com.example.musicplayer2o.Database.RealtimeDB.FirebaseRealtimeDB {
+- FirebaseDatabase m_realTimeDB
+- DatabaseReference m_realTimeDBRef
+- String m_userId
+- ValueEventListener m_userSongsListener
+- ValueEventListener m_allSongsListener
++ {static} FirebaseRealtimeDB getFirebaseRealtimeDB()
++ String generateUniqueID()
++ void createNewUser()
++ void loginUser()
++ void createNewSong(Song)
++ void registerSongToUser(SongOwnership,Song)
++ void setupOnUsersSongsChangedCallback(UsersSongsChangedAction)
++ void removeUserSongsListener()
++ void setupOnSongsChangedCallback(SongChangedAction)
++ void removeSongListener()
+- void uploadUserSongIdsToList(DataSnapshot,ArrayList<String>)
+- void uploadAppSongsToList(DataSnapshot,ArrayList<Song>)
+}
+
+
+class com.example.musicplayer2o.App.UsersNewSongs.NewSongsFragment {
+- AppPoolSongUploadFragment m_appSongPoolUploadFragment
+- LocalSongUploadFragment m_localSongUploadFragment
+- ImageButton m_uploadSongScreen
+- ImageButton m_viewAppPoolScreenUpload
+- TextView m_screenTitle
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+~ void setupViewsById(View)
+~ void setupFragmentsTransactions()
+- void setSongUploadMethod(Fragment)
+}
+
+
+class com.example.musicplayer2o.App.MainAppActivity {
+- UserProfileFragment m_userProfileFragment
+- NewSongsFragment m_newSongsFragment
+- SongPlayListFragment m_songPlaylistFragment
+- SongPlayingFragment m_songPlayingFragment
+- BottomNavigationView m_bottomNavigationView
+# void onCreate(Bundle)
+~ void setupFragments()
+~ void setupBottomBar()
+- void loadFragment(Fragment)
++ void transitionToPlayingSong(Playlist)
++ void transactionToPlaylistFragment()
+}
+
+
+
+
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.UsersNewSongs.RemoteSongUpload.AppPoolSongUploadFragment
+com.example.musicplayer2o.Authentication.Authenticator +.. com.example.musicplayer2o.Authentication.Authenticator$OnAuthenticationAttempt
+androidx.appcompat.app.AppCompatActivity <|-- com.example.musicplayer2o.Login.RegisterActivity
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.playSongs.SongPlayListFragment
+com.example.musicplayer2o.App.playSongs.SongPlayListFragment +.. com.example.musicplayer2o.App.playSongs.SongPlayListFragment$PlayListToSongPlayingTransitionCallback
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.Profile.UserProfileFragment
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.UsersNewSongs.LocalSongUpload.LocalSongUploadFragment
+com.example.musicplayer2o.App.UsersNewSongs.LocalSongUpload.LocalSongUploadFragment +.. com.example.musicplayer2o.App.UsersNewSongs.LocalSongUpload.LocalSongUploadFragment$ActivityForResultProvider
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.playSongs.SongPlayingFragment2
+com.example.musicplayer2o.App.playSongs.SongPlayingFragment2 +.. com.example.musicplayer2o.App.playSongs.SongPlayingFragment2$BackToPlaylistsCallbackInterface
+android.app.Service <|-- com.example.musicplayer2o.UriElements.Songs.SongPlayerService
+com.example.musicplayer2o.UriElements.Songs.SongPlayerService +.. com.example.musicplayer2o.UriElements.Songs.SongPlayerService$LocalBinder
+com.example.musicplayer2o.UriElements.Songs.Binder <|-- com.example.musicplayer2o.UriElements.Songs.SongPlayerService$LocalBinder
+com.example.musicplayer2o.Authentication.Authenticator <|-- com.example.musicplayer2o.Authentication.FirebaseAuthenticator
+com.example.musicplayer2o.UriElements.Songs.SongPlayerServiceUiCallbacks <|.. com.example.musicplayer2o.App.playSongs.SongPlayingFragment
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.playSongs.SongPlayingFragment
+com.example.musicplayer2o.App.playSongs.SongPlayingFragment +.. com.example.musicplayer2o.App.playSongs.SongPlayingFragment$BackToPlaylistsCallbackInterface
+androidx.appcompat.app.AppCompatActivity <|-- com.example.musicplayer2o.Login.LoginActivity
+com.example.musicplayer2o.UriElements.Songs.SongPlayer2 +.. com.example.musicplayer2o.UriElements.Songs.SongPlayer2$OnSongMaxDurationChanged
+com.example.musicplayer2o.UriElements.Songs.SongPlayer2 +.. com.example.musicplayer2o.UriElements.Songs.SongPlayer2$OnSongImageChanged
+com.example.musicplayer2o.Database.StorageDB.FilesStorage <|-- com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage
+com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage +.. com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions
+com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions +.. com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Song
+com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions +.. com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Picture
+android.widget.ArrayAdapter <|-- com.example.musicplayer2o.UriElements.Songs.GeneralSongListAdapter
+com.example.musicplayer2o.UriElements.Songs.GeneralSongListAdapter +.. com.example.musicplayer2o.UriElements.Songs.GeneralSongListAdapter$EverySongAdditionalActions
+com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions +.. com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$User
+com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions +.. com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$Song
+com.example.musicplayer2o.Database.RealtimeDB.RealtimeDB <|-- com.example.musicplayer2o.Database.RealtimeDB.FirebaseRealtimeDB
+androidx.fragment.app.Fragment <|-- com.example.musicplayer2o.App.UsersNewSongs.NewSongsFragment
+androidx.appcompat.app.AppCompatActivity <|-- com.example.musicplayer2o.App.MainAppActivity
+@enduml

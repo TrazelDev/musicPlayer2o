@@ -5,7 +5,7 @@ import com.example.musicplayer2o.UriElements.OnRetrieveUriAction;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Playlist implements Serializable
+public class Playlist
 {
     public Playlist(ArrayList<Song> songs, int currIndex)
     {

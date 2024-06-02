@@ -6,6 +6,7 @@ import com.example.musicplayer2o.Database.RealtimeDB.RealtimeDB;
 import com.example.musicplayer2o.Database.StorageDB.FilesStorage;
 import com.example.musicplayer2o.UriElements.OnRetrieveUriAction;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -79,12 +80,10 @@ public class Song
     // getters & setters:
     public String getSongId() { return m_songUniqueID; }
     public String getSongName() { return m_songName; }
-    public Uri getImageUri() { return m_imageUri; }
     public boolean hasPicture() { return m_hasPicture; }
     public void setOnRetrieveImageAction(OnRetrieveUriAction onRetrieveImageUri)
     {
-        if(!m_hasPicture) return;
-        if(m_imageUri != null)
+        if(m_imageUri != null || !m_hasPicture)
         {
             onRetrieveImageUri.actionWithUri(m_imageUri);
             return;

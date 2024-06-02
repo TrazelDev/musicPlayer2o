@@ -11,10 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/musicPlayerTheme"
         tools:targetApi="31">
+
         <service
-            android:name=".App.UsersNewSongs.RemoteSongUpload.Music"
+            android:name=".UriElements.Songs.SongPlayerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BIND" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".App.MainAppActivity"

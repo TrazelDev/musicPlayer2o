@@ -1,0 +1,34 @@
+@startuml
+class com.example.musicplayer2o.Login.LoginActivity {
+~ TextInputEditText m_editTextEmail
+~ Button m_loginBtn
+~ TextView m_switchToRegisterBtn
++ void onStart()
+- void switchToMainApp()
+# void onCreate(Bundle)
+- void setupViewsById()
+- void setupListenerForSwitchToRegistering()
+- void setupLoginListener()
+- boolean areLoginFieldsFilled()
+- void onLoginAttempt(Task<AuthResult>)
+}
+
+
+class com.example.musicplayer2o.Login.RegisterActivity {
+~ TextInputEditText m_editTextEmail
+~ Button m_registerBtn
+~ TextView m_switchToLoginBtn
+# void onCreate(Bundle)
++ void setupViewsById()
++ void setupListenerForSwitchToLoggingIn()
++ void setupRegisterListener()
++ boolean areRegisterFieldsFilled()
++ void onRegisterAttempt(Task<AuthResult>)
+}
+
+
+
+
+androidx.appcompat.app.AppCompatActivity <|-- com.example.musicplayer2o.Login.LoginActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.musicplayer2o.Login.RegisterActivity
+@enduml

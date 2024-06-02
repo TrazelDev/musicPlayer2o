@@ -1,0 +1,104 @@
+@startuml
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage {
+- StorageReference m_storageReference
++ {static} FirebaseFilesStorage getInstance()
++ void uploadSong(Uri,String)
++ void uploadPicture(Uri,String)
++ void setupOnRetrieveImageUriActions(OnRetrieveUriAction,String)
++ void setupOnRetrieveSongUriActions(OnRetrieveUriAction,String)
+}
+
+
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions {
+}
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Song {
++ {static} String FOLDER
++ {static} String EXTENSION
+}
+
+class com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Picture {
++ {static} String FOLDER
++ {static} String EXTENSION
+}
+
+interface com.example.musicplayer2o.Database.RealtimeDB.SongChangedAction {
++ void onSongsChanged(ArrayList<Song>)
+}
+
+interface com.example.musicplayer2o.Database.RealtimeDB.UsersSongsChangedAction {
++ void onSongsChanged(ArrayList<String>)
+}
+
+class com.example.musicplayer2o.Database.RealtimeDB.FirebaseRealtimeDB {
+- FirebaseDatabase m_realTimeDB
+- DatabaseReference m_realTimeDBRef
+- String m_userId
+- ValueEventListener m_userSongsListener
+- ValueEventListener m_allSongsListener
++ {static} FirebaseRealtimeDB getFirebaseRealtimeDB()
++ String generateUniqueID()
++ void createNewUser()
++ void loginUser()
++ void createNewSong(Song)
++ void registerSongToUser(SongOwnership,Song)
++ void setupOnUsersSongsChangedCallback(UsersSongsChangedAction)
++ void removeUserSongsListener()
++ void setupOnSongsChangedCallback(SongChangedAction)
++ void removeSongListener()
+- void uploadUserSongIdsToList(DataSnapshot,ArrayList<String>)
+- void uploadAppSongsToList(DataSnapshot,ArrayList<Song>)
+}
+
+
+class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions {
++ {static} String DB_MAIN_URL
+}
+
+class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$User {
++ {static} String FOLDER
++ {static} String USER_SONGS
++ {static} String OWNED_SONGS
++ {static} String REFERENCE_SONGS
+}
+
+class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$Song {
++ {static} String FOLDER
++ {static} String NAME_KEY_ATTRIBUTE
++ {static} String HAS_PICTURE_KEY_ATTRIBUTE
+}
+
+abstract class com.example.musicplayer2o.Database.StorageDB.FilesStorage {
+- {static} FilesStorage m_instance
++ {static} FilesStorage getInstance()
++ {abstract}void uploadSong(Uri,String)
++ {abstract}void uploadPicture(Uri,String)
++ {abstract}void setupOnRetrieveImageUriActions(OnRetrieveUriAction,String)
++ {abstract}void setupOnRetrieveSongUriActions(OnRetrieveUriAction,String)
+}
+
+
+abstract class com.example.musicplayer2o.Database.RealtimeDB.RealtimeDB {
+- {static} RealtimeDB m_instance
++ {static} RealtimeDB getInstance()
++ {abstract}String generateUniqueID()
++ {abstract}void createNewUser()
++ {abstract}void loginUser()
++ {abstract}void createNewSong(Song)
++ {abstract}void registerSongToUser(SongOwnership,Song)
++ {abstract}void setupOnUsersSongsChangedCallback(UsersSongsChangedAction)
++ {abstract}void removeUserSongsListener()
++ {abstract}void setupOnSongsChangedCallback(SongChangedAction)
++ {abstract}void removeSongListener()
+}
+
+
+
+
+com.example.musicplayer2o.Database.StorageDB.FilesStorage <|-- com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage
+com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage +.. com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions
+com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions +.. com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Song
+com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions +.. com.example.musicplayer2o.Database.StorageDB.FirebaseFilesStorage$FilesStorageDefinitions$Picture
+com.example.musicplayer2o.Database.RealtimeDB.RealtimeDB <|-- com.example.musicplayer2o.Database.RealtimeDB.FirebaseRealtimeDB
+com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions +.. com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$User
+com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions +.. com.example.musicplayer2o.Database.RealtimeDB.RealtimeDBDefinitions$Song
+@enduml
