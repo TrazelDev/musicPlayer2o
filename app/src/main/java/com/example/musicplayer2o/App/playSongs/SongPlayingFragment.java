@@ -78,7 +78,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerServiceUi
             @Override
             public void onProgressChanged(SeekBar seekBar, int songProgressPercentage, boolean fromUser)
             {
-                if(fromUser) { m_songPlayerService.setupSongNewPlayingTimePoint(songProgressPercentage); }
+                if(fromUser) { m_songPlayerService.changeSongPlayingPoint(songProgressPercentage); }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
