@@ -239,14 +239,13 @@ public class SongPlayerService extends Service
                 m_currSong = m_playlist.getNewSong();
                 m_pausePoint = 0;
                 m_pauseSongPercentagePassed = 0;
-                forceUiUpdate();
 
 
                 Handler delayHandler = new Handler();
                 Runnable delayToNotOverrideSongDurationRead = new Runnable()
                 {
                     @Override
-                    public void run() { playOrPause(); }
+                    public void run() {playOrPause(); forceUiUpdate();}
                 };
                 delayHandler.postDelayed(delayToNotOverrideSongDurationRead, 500);
             }
