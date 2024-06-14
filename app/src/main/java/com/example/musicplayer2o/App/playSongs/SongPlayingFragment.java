@@ -21,9 +21,9 @@ import com.example.musicplayer2o.R;
 import com.example.musicplayer2o.UriElements.Images.ImageUtils;
 import com.example.musicplayer2o.UriElements.Songs.Playlist;
 import com.example.musicplayer2o.UriElements.Songs.SongPlayerService;
-import com.example.musicplayer2o.UriElements.Songs.SongPlayerServiceUiCallbacks;
+import com.example.musicplayer2o.UriElements.Songs.SongPlayerUpdateCallbacks;
 
-public class SongPlayingFragment extends Fragment implements SongPlayerServiceUiCallbacks
+public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCallbacks
 {
     // Basic setup
     public SongPlayingFragment(Playlist playlist, SongPlayingFragment.BackToPlaylistsCallbackInterface backToPlaylistCallback)
@@ -46,6 +46,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerServiceUi
         setupViewsById(view);
         setupPlayOrPauseListener();
         setupOnUserChangingSongTimePointListener();
+        setupGoBackToPlaylistBtn();
         if(m_boundToService) m_songPlayerService.forceUiUpdate();
 
         return view;
@@ -58,7 +59,8 @@ public class SongPlayingFragment extends Fragment implements SongPlayerServiceUi
     }
     private void setupViewsById(View view)
     {
-        m_playOrPause = view.findViewById(R.id.play_pause_icon);
+        m_playOrPause = view.findViewById(R.id.playPauseIcon);
+        m_backBtn = view.findViewById(R.id.backToPlaylistBtn);
         m_songPicture = view.findViewById(R.id.songImage);
         m_songCurrDuration = view.findViewById(R.id.songCurrLength);
         m_songMaxDuration = view.findViewById(R.id.songMaxLength);
@@ -86,12 +88,22 @@ public class SongPlayingFragment extends Fragment implements SongPlayerServiceUi
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
     }
+    public void setupGoBackToPlaylistBtn()
+    {
+        m_backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                getActivity().unbindService(m_serviceConnection);
+                m_backToPlaylistCallback.execute();
+            }
+        });
+    }
 
 
 
 
-
-    // Ui callbacks:
+    // Update callbacks for song playing service:
     @Override
     public void setMaxDuration(String formattedMaxDuration) { m_songMaxDuration.setText(formattedMaxDuration); }
     @Override
@@ -100,7 +112,6 @@ public class SongPlayingFragment extends Fragment implements SongPlayerServiceUi
     public void setSongImage(Uri imageUri) { ImageUtils.loadImageDynamically(requireContext(), m_songPicture, imageUri, R.drawable.default_image); }
     @Override
     public void setSongPercentagePassed(int songPercentagePassed) { m_songSeekbarProgress.setProgress(songPercentagePassed); }
-
     @Override
     public void setIsSongPlaying(boolean isSongPlaying)
     {
@@ -113,6 +124,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerServiceUi
 
 
     private ImageButton m_playOrPause;
+    private ImageButton m_backBtn;
     private ImageView m_songPicture;
     private TextView m_songMaxDuration;
     private TextView m_songCurrDuration;

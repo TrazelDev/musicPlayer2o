@@ -43,7 +43,7 @@ public class SongPlayerService extends Service
     }
     public void playOrPause()
     {
-        for (SongPlayerServiceUiCallbacks uiCallbacks : m_uiCallbacksList)
+        for (SongPlayerUpdateCallbacks uiCallbacks : m_uiCallbacksList)
             uiCallbacks.setIsSongPlaying(!m_mediaPlayer.isPlaying()); // ! - used because we switch the state later in the function
 
         if(isCurrSongPlayedForFirstTime())
@@ -72,7 +72,7 @@ public class SongPlayerService extends Service
     {
         if(!m_mediaPlayer.isPlaying())
         {
-            for (SongPlayerServiceUiCallbacks uiCallbacks : m_uiCallbacksList)
+            for (SongPlayerUpdateCallbacks uiCallbacks : m_uiCallbacksList)
                 uiCallbacks.setSongPercentagePassed(m_pauseSongPercentagePassed);
             return;
         }
@@ -82,7 +82,7 @@ public class SongPlayerService extends Service
         m_mediaPlayer.seekTo(songMilliSecondsPassed);
         m_mediaPlayer.start();
 
-        for (SongPlayerServiceUiCallbacks uiCallbacks : m_uiCallbacksList)
+        for (SongPlayerUpdateCallbacks uiCallbacks : m_uiCallbacksList)
             uiCallbacks.setSongPercentagePassed(songProgressPercentage);
     }
 
@@ -94,7 +94,7 @@ public class SongPlayerService extends Service
 
 
     // adding updating callbacks:
-    public void addNewUiCallback(SongPlayerServiceUiCallbacks newUiCallback)
+    public void addNewUiCallback(SongPlayerUpdateCallbacks newUiCallback)
     {
         if(m_uiCallbacksList == null) m_uiCallbacksList = new ArrayList<>();
         m_uiCallbacksList.add(newUiCallback);
@@ -105,7 +105,7 @@ public class SongPlayerService extends Service
     {
         if(m_uiCallbacksList == null) return;
 
-        for (SongPlayerServiceUiCallbacks uiCallbacks : m_uiCallbacksList)
+        for (SongPlayerUpdateCallbacks uiCallbacks : m_uiCallbacksList)
         {
             onGetPicture(uiCallbacks);
             ongGetCurrDurationSong(uiCallbacks);
@@ -142,12 +142,12 @@ public class SongPlayerService extends Service
 
 
     // Helpers:
-    private void onGetPicture(SongPlayerServiceUiCallbacks uiCallbacks)
+    private void onGetPicture(SongPlayerUpdateCallbacks uiCallbacks)
     {
         if(m_currSong == null) m_currSong = m_playlist.getNewSong();
         m_currSong.setOnRetrieveImageAction(imageUri -> uiCallbacks.setSongImage(imageUri));
     }
-    private void ongGetCurrDurationSong(SongPlayerServiceUiCallbacks uiCallbacks)
+    private void ongGetCurrDurationSong(SongPlayerUpdateCallbacks uiCallbacks)
     {
         String songDurationPassed = "";
         if(m_mediaPlayer.isPlaying()) songDurationPassed = TimeConversions.millisecondsToFormattedString(m_mediaPlayer.getCurrentPosition());
@@ -155,7 +155,7 @@ public class SongPlayerService extends Service
 
         uiCallbacks.setSongDurationPassed(songDurationPassed);
     }
-    private void onGetSongMaxDuration(SongPlayerServiceUiCallbacks uiCallbacks)
+    private void onGetSongMaxDuration(SongPlayerUpdateCallbacks uiCallbacks)
     {
         if(m_mediaPlayer.isPlaying())
         {
@@ -176,7 +176,7 @@ public class SongPlayerService extends Service
         return songPercentagePassed;
     }
     // The reason that is the song is off or on matters is because I can check song duration only when it is on:
-    private void setOnGetSongMaxDurationWhenSongOffCallback(SongPlayerServiceUiCallbacks uiCallbacks, Uri songUri)
+    private void setOnGetSongMaxDurationWhenSongOffCallback(SongPlayerUpdateCallbacks uiCallbacks, Uri songUri)
     {
         MediaPlayer.OnPreparedListener setSongDurationWithMediaPlayer = new MediaPlayer.OnPreparedListener() {
             @Override
@@ -217,7 +217,7 @@ public class SongPlayerService extends Service
                     int songPercentagePassed = getSongPercentagePassedWhileSongActive();
 
                     String songDurationPassed = TimeConversions.millisecondsToFormattedString(m_mediaPlayer.getCurrentPosition());
-                    for (SongPlayerServiceUiCallbacks uiCallbacks : m_uiCallbacksList)
+                    for (SongPlayerUpdateCallbacks uiCallbacks : m_uiCallbacksList)
                     {
                         uiCallbacks.setSongDurationPassed(songDurationPassed);
                         uiCallbacks.setSongPercentagePassed(songPercentagePassed);
@@ -251,7 +251,17 @@ public class SongPlayerService extends Service
             }
         });
     }
-
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (m_mediaPlayer != null)
+        {
+            m_mediaPlayer.release();
+            m_mediaPlayer = null;
+        }
+        if (m_songTimeDalayHandler != null && m_songCurrPointUpdater != null) { m_songTimeDalayHandler.removeCallbacks(m_songCurrPointUpdater); }
+    }
 
 
 
@@ -266,7 +276,7 @@ public class SongPlayerService extends Service
     // UI attributes:
     private Handler m_songTimeDalayHandler;
     private Runnable m_songCurrPointUpdater;
-    private ArrayList<SongPlayerServiceUiCallbacks> m_uiCallbacksList = null;
+    private ArrayList<SongPlayerUpdateCallbacks> m_uiCallbacksList = null;
 
 
 

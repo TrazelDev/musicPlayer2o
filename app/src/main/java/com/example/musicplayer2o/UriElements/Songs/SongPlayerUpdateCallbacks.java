@@ -2,7 +2,7 @@ package com.example.musicplayer2o.UriElements.Songs;
 
 import android.net.Uri;
 
-public interface SongPlayerServiceUiCallbacks
+public interface SongPlayerUpdateCallbacks
 {
     // Durations:
     public void setMaxDuration(String formattedMaxDuration);
