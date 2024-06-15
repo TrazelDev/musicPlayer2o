@@ -39,7 +39,7 @@ public class SongPlayerService extends Service
     public void uploadPlayList(Playlist playlist)
     {
         m_playlist = playlist;
-        m_currSong = playlist.getNewSong();
+        m_currSong = playlist.getCurrSong();
     }
     public void playOrPause()
     {
@@ -144,7 +144,7 @@ public class SongPlayerService extends Service
     // Helpers:
     private void onGetPicture(SongPlayerUpdateCallbacks uiCallbacks)
     {
-        if(m_currSong == null) m_currSong = m_playlist.getNewSong();
+        // if(m_currSong == null) m_currSong = m_playlist.getNewSong();
         m_currSong.setOnRetrieveImageAction(imageUri -> uiCallbacks.setSongImage(imageUri));
     }
     private void ongGetCurrDurationSong(SongPlayerUpdateCallbacks uiCallbacks)
@@ -236,7 +236,7 @@ public class SongPlayerService extends Service
             public void onCompletion(MediaPlayer mediaPlayer)
             {
                 m_mediaPlayer = mediaPlayer;
-                m_currSong = m_playlist.getNewSong();
+                m_currSong = m_playlist.getCurrSong();
                 m_pausePoint = 0;
                 m_pauseSongPercentagePassed = 0;
 

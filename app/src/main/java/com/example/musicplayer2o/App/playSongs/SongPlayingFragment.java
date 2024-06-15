@@ -20,7 +20,8 @@ import androidx.fragment.app.Fragment;
 import com.example.musicplayer2o.R;
 import com.example.musicplayer2o.UriElements.Images.ImageUtils;
 import com.example.musicplayer2o.UriElements.Songs.Playlist;
-import com.example.musicplayer2o.UriElements.Songs.SongPlayerService;
+import com.example.musicplayer2o.UriElements.Songs.SongPlayer.AbstractSongPlayerService;
+import com.example.musicplayer2o.UriElements.Songs.SongPlayer.MediaSongPlayerService;
 import com.example.musicplayer2o.UriElements.Songs.SongPlayerUpdateCallbacks;
 
 public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCallbacks
@@ -28,14 +29,31 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
     // Basic setup
     public SongPlayingFragment(Playlist playlist, SongPlayingFragment.BackToPlaylistsCallbackInterface backToPlaylistCallback)
     {
-        m_playlist = playlist;
+        m_serviceConnection = new ServiceConnection()
+        {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service)
+            {
+                AbstractSongPlayerService.LocalBinder binder = (AbstractSongPlayerService.LocalBinder)service;
+                m_songPlayerService = binder.getService();
+                m_songPlayerService.setPlaylist(playlist);
+                // m_songPlayerService.addNewUiCallback(SongPlayingFragment.this);
+                m_boundToService = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) { m_boundToService = false; }
+        };
+
+
         m_backToPlaylistCallback = backToPlaylistCallback;
     }
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Intent serviceIntent = new Intent(getActivity(), SongPlayerService.class);
+
+        Intent serviceIntent = new Intent(getActivity(), MediaSongPlayerService.class);
         getActivity().bindService(serviceIntent, m_serviceConnection, Context.BIND_AUTO_CREATE);
     }
     @Override
@@ -47,7 +65,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
         setupPlayOrPauseListener();
         setupOnUserChangingSongTimePointListener();
         setupGoBackToPlaylistBtn();
-        if(m_boundToService) m_songPlayerService.forceUiUpdate();
+        // if(m_boundToService) m_songPlayerService.forceUiUpdate();
 
         return view;
     }
@@ -55,7 +73,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
     public void onResume()
     {
         super.onResume();
-        if(m_boundToService) m_songPlayerService.forceUiUpdate();
+        // if(m_boundToService) m_songPlayerService.forceUiUpdate();
     }
     private void setupViewsById(View view)
     {
@@ -80,7 +98,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
             @Override
             public void onProgressChanged(SeekBar seekBar, int songProgressPercentage, boolean fromUser)
             {
-                if(fromUser) { m_songPlayerService.changeSongPlayingPoint(songProgressPercentage); }
+                // if(fromUser) { m_songPlayerService.changeSongPlayingPoint(songProgressPercentage); }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
@@ -129,23 +147,9 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
     private TextView m_songMaxDuration;
     private TextView m_songCurrDuration;
     private SeekBar m_songSeekbarProgress;
-
-    private Playlist m_playlist;
     private BackToPlaylistsCallbackInterface m_backToPlaylistCallback;
-    private SongPlayerService m_songPlayerService;
     private boolean m_boundToService = false;
-    private ServiceConnection m_serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            SongPlayerService.LocalBinder binder = (SongPlayerService.LocalBinder) service;
-            m_songPlayerService = binder.getService();
-            m_songPlayerService.uploadPlayList(m_playlist);
-            m_songPlayerService.addNewUiCallback(SongPlayingFragment.this);
-            m_boundToService = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) { m_boundToService = false; }
-    };
+    private AbstractSongPlayerService m_songPlayerService;
+    private ServiceConnection m_serviceConnection;
     public interface BackToPlaylistsCallbackInterface { void execute(); }
 }
