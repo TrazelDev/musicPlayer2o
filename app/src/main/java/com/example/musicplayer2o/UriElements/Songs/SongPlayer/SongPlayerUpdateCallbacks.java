@@ -1,4 +1,4 @@
-package com.example.musicplayer2o.UriElements.Songs;
+package com.example.musicplayer2o.UriElements.Songs.SongPlayer;
 
 import android.net.Uri;
 
@@ -6,7 +6,7 @@ public interface SongPlayerUpdateCallbacks
 {
     // Durations:
     public void setMaxDuration(String formattedMaxDuration);
-    public void setSongDurationPassed(String formattedSongDurationPassed);
+    public void setSongElapsedDuration(String formattedSongDurationPassed);
 
 
     // image:

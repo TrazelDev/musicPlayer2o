@@ -6,17 +6,30 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.example.musicplayer2o.UriElements.Songs.Playlist;
-import com.example.musicplayer2o.UriElements.Songs.SongPlayerUpdateCallbacks;
 
 import java.util.ArrayList;
 
 public abstract class AbstractSongPlayerService extends Service
 {
-    public void setPlaylist(Playlist playlist) { m_playlist = playlist; }
+    // supported function that will be implemented inside of the child class
     public abstract void playOrPause();
-    public abstract void seekTo();
-    public abstract void addUpdatingCallbacks(SongPlayerUpdateCallbacks updateCallbacks);
-    public abstract void forceAllUpdates();
+    public abstract void seekTo(int songPercentage);
+    public abstract void forceUpdates();
+
+
+
+
+
+    // basic utility functions
+    public void setPlaylist(Playlist playlist) { m_playlist = playlist; }
+    public void addUpdatingCallbacks(SongPlayerUpdateCallbacks updateCallbacks) { m_updateCallbacksList.add(updateCallbacks); }
+    public void clearUpdatingCallbacks() { m_updateCallbacksList = new ArrayList<>(); }
+
+
+
+
+
+
 
 
 
@@ -30,10 +43,6 @@ public abstract class AbstractSongPlayerService extends Service
 
 
 
-
-
-
-
     protected Playlist m_playlist;
-    protected ArrayList<SongPlayerUpdateCallbacks> m_uiCallbacksList = new ArrayList<>();
+    protected ArrayList<SongPlayerUpdateCallbacks> m_updateCallbacksList = new ArrayList<>();
 }

@@ -22,7 +22,7 @@ import com.example.musicplayer2o.UriElements.Images.ImageUtils;
 import com.example.musicplayer2o.UriElements.Songs.Playlist;
 import com.example.musicplayer2o.UriElements.Songs.SongPlayer.AbstractSongPlayerService;
 import com.example.musicplayer2o.UriElements.Songs.SongPlayer.MediaSongPlayerService;
-import com.example.musicplayer2o.UriElements.Songs.SongPlayerUpdateCallbacks;
+import com.example.musicplayer2o.UriElements.Songs.SongPlayer.SongPlayerUpdateCallbacks;
 
 public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCallbacks
 {
@@ -37,7 +37,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
                 AbstractSongPlayerService.LocalBinder binder = (AbstractSongPlayerService.LocalBinder)service;
                 m_songPlayerService = binder.getService();
                 m_songPlayerService.setPlaylist(playlist);
-                // m_songPlayerService.addNewUiCallback(SongPlayingFragment.this);
+                m_songPlayerService.addUpdatingCallbacks(SongPlayingFragment.this);
                 m_boundToService = true;
             }
 
@@ -65,7 +65,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
         setupPlayOrPauseListener();
         setupOnUserChangingSongTimePointListener();
         setupGoBackToPlaylistBtn();
-        // if(m_boundToService) m_songPlayerService.forceUiUpdate();
+        if(m_boundToService) m_songPlayerService.forceUpdates();
 
         return view;
     }
@@ -73,7 +73,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
     public void onResume()
     {
         super.onResume();
-        // if(m_boundToService) m_songPlayerService.forceUiUpdate();
+        if(m_boundToService) m_songPlayerService.forceUpdates();
     }
     private void setupViewsById(View view)
     {
@@ -98,7 +98,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
             @Override
             public void onProgressChanged(SeekBar seekBar, int songProgressPercentage, boolean fromUser)
             {
-                // if(fromUser) { m_songPlayerService.changeSongPlayingPoint(songProgressPercentage); }
+                if(fromUser) m_songPlayerService.seekTo(songProgressPercentage);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
@@ -125,7 +125,7 @@ public class SongPlayingFragment extends Fragment implements SongPlayerUpdateCal
     @Override
     public void setMaxDuration(String formattedMaxDuration) { m_songMaxDuration.setText(formattedMaxDuration); }
     @Override
-    public void setSongDurationPassed(String formattedSongDurationPassed) { m_songCurrDuration.setText(formattedSongDurationPassed); }
+    public void setSongElapsedDuration(String formattedSongDurationPassed) { m_songCurrDuration.setText(formattedSongDurationPassed); }
     @Override
     public void setSongImage(Uri imageUri) { ImageUtils.loadImageDynamically(requireContext(), m_songPicture, imageUri, R.drawable.default_image); }
     @Override
